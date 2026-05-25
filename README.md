@@ -1,4 +1,4 @@
-# FW AI Audit — Multi-Vendor Firewall Security Assessment Platform
+# FW AI Audit v1.0.0 — Multi-Vendor Firewall Security Assessment Platform
 
 A web-based security assessment platform with automated SSH + Management API audit,
 AI-powered risk analysis (multi-provider via LiteLLM), security compliance mapping
@@ -10,7 +10,7 @@ and multi-format report generation (PDF, Excel, CSV, Word).
 ## Project Structure
 
 ```
-onyx-1.0.0/
+fw-ai-audit/
 ├── backend/
 │   ├── main.py              ← FastAPI app (API Gateway + WebSocket)
 │   ├── credential_vault.py  ← Fernet-encrypted session-scoped credential store
@@ -71,7 +71,7 @@ Open your browser: **http://localhost:8000**
 npm install -g @anthropic/claude-code
 
 # Launch from the project root
-cd onyx-1.0.0
+cd fw-ai-audit
 claude
 ```
 
