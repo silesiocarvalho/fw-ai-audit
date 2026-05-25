@@ -42,7 +42,14 @@ fw-ai-audit/
 
 ## Quick Start
 
-### 1. Prerequisites
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/silesiocarvalho/fw-ai-audit.git
+cd fw-ai-audit
+```
+
+### 2. Prerequisites
 
 ```bash
 # Python 3.12+ and uv required
@@ -52,7 +59,7 @@ uv --version   # install from https://docs.astral.sh/uv if missing
 uv sync
 ```
 
-### 2. Start the Server
+### 3. Start the Server
 
 ```bash
 # Preferred — loads .env and starts uvicorn
