@@ -910,7 +910,7 @@ def _findings_table(findings: list, styles: dict, status_filter=None) -> "Table"
     else:
         rows = findings
 
-    col_widths = [1.5*cm, 5.5*cm, 1.0*cm, 1.5*cm, 1.8*cm, 6.5*cm]
+    col_widths = [2.5*cm, 5.0*cm, 1.0*cm, 1.5*cm, 1.5*cm, 6.3*cm]
     header = [
         Paragraph("ID", styles["small_white"]),
         Paragraph("Description", styles["small_white"]),
@@ -1904,6 +1904,41 @@ _PANOS_CONSULTING_MAP = [
     ]),
 ]
 
+_FMC_CONSULTING_MAP = [
+    ("2", "Security Policy Review", [
+        ("2.1", "Default Deny Policy and Stealth Rule",         ["2.1.1", "2.1.2"]),
+        ("2.2", "TLS/SSL Decryption Controls",                  ["2.1.6", "2.1.7", "3.2.2"]),
+        ("2.3", "Application Layer and QoS Inspection",         ["2.1.8", "2.1.9", "2.1.10"]),
+    ]),
+    ("3", "Threat Prevention", [
+        ("3.1", "Intrusion Prevention System",                  ["2.1.3", "2.1.4", "2.1.5"]),
+        ("3.2", "Intrusion Rule Currency and Updates",          ["1.3.1", "1.3.2", "1.6.1", "1.6.2"]),
+    ]),
+    ("4", "Firewall Posture Assessment", [
+        ("4.1", "High Availability and Resilience",             ["HA-1"]),
+        ("4.2", "Fragmentation and Packet Controls",            ["3.2.1"]),
+        ("4.3", "Routing Protocol Security",                    ["3.1.1", "3.1.2"]),
+        ("4.4", "Default Deny All Traffic",                     ["3.3"]),
+    ]),
+    ("5", "Software Version and Lifecycle Risk", [
+        ("5.1", "FMC Software Version Lifecycle",               ["VER-1"]),
+    ]),
+    ("6", "Additional Security, Architecture, and Governance Findings", [
+        ("6.1",  "Access Credentials and Account Management",   ["1.1.1.1", "1.1.2", "1.1.3"]),
+        ("6.2",  "Identity and User Authentication",            ["1.1.4.1.1", "1.1.4.1.2",
+                                                                  "1.1.4.1.3", "1.1.4.1.4",
+                                                                  "1.1.4.1.5", "1.1.4.1.6",
+                                                                  "1.1.4.1.7"]),
+        ("6.3",  "Backup and Recovery",                         ["1.2.1", "1.2.2"]),
+        ("6.4",  "Health Monitoring and Alerting",              ["1.4.1"]),
+        ("6.5",  "Syslog and External Logging",                 ["1.4.2.1", "1.4.2.2"]),
+        ("6.6",  "Time Synchronisation",                        ["1.4.2.3"]),
+        ("6.7",  "Management Access Controls",                  ["1.4.2.4", "1.4.2.5"]),
+        ("6.8",  "SNMP Security",                               ["1.4.3"]),
+        ("6.9",  "Vulnerability Discovery Schedule",            ["1.5.1"]),
+    ]),
+]
+
 _PRIORITY_COLORS = {
     "P1": COLORS["fail"],
     "P2": COLORS["critical"],
@@ -1917,7 +1952,7 @@ def generate_consulting_docx(data: dict, output_path: str) -> str:
     Consulting-style Word report following data-source/template_1.txt.
     Shows FAIL and RECOMMENDATION findings only. Empty sections are skipped.
     RECOMMENDATION findings are never included in the Section 7 priority plan.
-    Vendor-dispatched: uses _PANOS_CONSULTING_MAP for palo_alto, _CONSULTING_MAP otherwise.
+    Vendor-dispatched: _PANOS_CONSULTING_MAP for palo_alto, _FMC_CONSULTING_MAP for cisco_fmc, _CONSULTING_MAP otherwise.
     """
     if not HAS_DOCX:
         raise RuntimeError("python-docx required: uv add python-docx")
@@ -1928,7 +1963,12 @@ def generate_consulting_docx(data: dict, output_path: str) -> str:
     doc  = _DocxDocument()
 
     vendor         = meta.get("device_context", {}).get("vendor", "checkpoint")
-    consulting_map = _PANOS_CONSULTING_MAP if vendor == "palo_alto" else _CONSULTING_MAP
+    if vendor == "palo_alto":
+        consulting_map = _PANOS_CONSULTING_MAP
+    elif vendor == "cisco_fmc":
+        consulting_map = _FMC_CONSULTING_MAP
+    else:
+        consulting_map = _CONSULTING_MAP
 
     for sec in doc.sections:
         sec.top_margin    = Cm(2.5)
